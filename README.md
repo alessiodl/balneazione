@@ -3,8 +3,8 @@ Una applicazione di web mapping che mostra i dati sulla balneabilità della cost
 
 <img src="screenshots/screenshot_map.png" alt="Mappa">
 
-<img src="screenshots/screenshot_details_map.png" alt="Pannello dettagli">
+<img src="screenshots/screenshot_detail_map.png" alt="Pannello dettagli">
 
-<img src="screenshots/screenshot_details_chart.png" alt="Grafico">
+<img src="screenshots/screenshot_detail_chart.png" alt="Grafico">
 
 <a href="http://www.alessiodilorenzo.it/balneazione/">Lancia l'applicazione</a>
