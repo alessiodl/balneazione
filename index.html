@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Acque balneabili | Abruzzo</title>
+
+    <link rel="stylesheet" href="https://bootswatch.com/cerulean/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">
+    <link rel="stylesheet" href="assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css">
+    <link rel="stylesheet" href="assets/leaflet-geosearch/css/l.geosearch.css" />
+    <link rel="stylesheet" href="assets/css/app.css">
+
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon-152.png">
+    <link rel="icon" sizes="196x196" href="assets/img/favicon-196.png">
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <div class="navbar-icon-container">
+            <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg white"></i></a>
+            <a href="#" class="navbar-icon pull-right visible-xs" id="sidebar-toggle-btn"><i class="fa fa-search fa-lg white"></i></a>
+          </div>
+          <a class="navbar-brand" href="#">Balneazione Abruzzo</a>
+        </div>
+        
+        <div class="navbar-collapse collapse">
+        	<ul class="nav navbar-nav navbar-right">
+	        	<li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;Elenco zone</a></li>
+	            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle white"></i>&nbsp;Informazioni</a></li>
+	        </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <div id="container">
+      <div id="sidebar">
+        <div class="sidebar-wrapper">
+          <div class="panel panel-default" id="features">
+            <div class="panel-heading">
+              <h3 class="panel-title"><span style="font-size:12px;font-weight: bold;">Elenco delle zone classificate</span>
+              <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i>&nbsp;</button></h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-9 col-md-9">
+                  <input type="text" class="form-control input-sm search" placeholder="Filtra per Comune..." />
+                </div>
+                <div class="col-xs-3 col-md-3">
+                  <button type="button" class="btn btn-sm btn-primary pull-right sort" data-sort="nomeComune" id="sort-btn"><i class="fa fa-sort"></i>&nbsp;&nbsp;Ordina</button>
+                </div>
+              </div>
+            </div>
+            <div class="sidebar-table">
+              <table class="table table-hover table-condensed" id="feature-list">
+                <thead class="hidden">
+                  <tr>
+                    <th>Comune</th>
+                  <tr>
+                  <tr>
+                    <th>Nome</th>
+                  <tr>
+                  <tr>
+                    <th>Chevron</th>
+                  <tr>
+                </thead>
+                <tbody class="list" style="font-size:11px;">
+                	
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="map"><!-- mappa --></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+    <script src="http://listjs.com/no-cdn/list.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
+    <script src="assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>
+    <script src="assets/easybutton/easy-button.js"></script>
+    <script src="assets/leaflet-geosearch/js/l.control.geosearch.js"></script>
+	<script src="assets/leaflet-geosearch/js/l.geosearch.provider.google.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
