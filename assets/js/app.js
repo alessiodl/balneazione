@@ -8,10 +8,10 @@ $(window).resize(function() {
 $("#about-btn").click(function() {
 	
   content = "<p>Questa applicazione web &egrave; stata sviluppata sfruttando i servizi ReST "+ 
-  			"esposti dal <a href='http://www.portaleacque.salute.gov.it' target='_blank'>Portale Acque</a> del <a href='http://salute.gov.it' target='_blank'>Ministero della Salute</a>. "+
-  			"I dati sono rilasciati sotto licenza Creative Commons <a href='http://creativecommons.org/licenses/by-nc-nd/4.0/deed.it' target='_blank'>Attribuzione-Non commerciale-Non opere derivate 4.0 Unported</a>. "+
-  			"La classificazione delle zone si basa su quella riportata nell’Allegato A alla <a href='http://www.artaabruzzo.it/download/aree/acqua/balneazione/20160414_AL_balneazione_all_08a_2016_dgr_148_2016.pdf' target='_blank'>D.G.R. n. 148 del 10/3/2016</a>.</p>"+
-  			"<p>Progettata e sviluppata da <a href='http://alessiodilorenzo.it' target='_blank'>Alessio Di Lorenzo</a> su base <a href='https://github.com/bmcbride/bootleaf' target='_blank'>BootLeaf</a>."
+  		"esposti dal <a href='http://www.portaleacque.salute.gov.it' target='_blank'>Portale Acque</a> del <a href='http://salute.gov.it' target='_blank'>Ministero della Salute</a>. "+
+  		"I dati sono rilasciati sotto licenza Creative Commons <a href='http://creativecommons.org/licenses/by-nc-nd/4.0/deed.it' target='_blank'>Attribuzione-Non commerciale-Non opere derivate 4.0 Unported</a>. "+
+  		"La classificazione delle zone si basa su quella riportata nell’Allegato A alla <a href='http://www.artaabruzzo.it/download/aree/acqua/balneazione/20160414_AL_balneazione_all_08a_2016_dgr_148_2016.pdf' target='_blank'>D.G.R. n. 148 del 10/3/2016</a>.</p>"+
+  		"<p>Progettata e sviluppata da <a href='http://alessiodilorenzo.it' target='_blank'>Alessio Di Lorenzo</a> su base <a href='https://github.com/bmcbride/bootleaf' target='_blank'>BootLeaf</a>."
   bootbox.dialog({
   	title: "Informazioni",
   	message: content
