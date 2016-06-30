@@ -1,17 +1,17 @@
-Chiamata Aree di balneazione permessa
+zone di balneazione permessa:
 http://www.portaleacque.salute.gov.it/PortaleAcquePubblico/rest/layer/GB/066103
 
-Chiamata Aree interdette
+zone interdette:
 http://www.portaleacque.salute.gov.it/PortaleAcquePubblico/rest/layer/AI/066103
 
-Chiamata tutte le Aree
+tutte le zone:
 http://www.portaleacque.salute.gov.it/PortaleAcquePubblico/rest/layer/AB/066103
 
-Chiamata Punti di prelievo
+punti di prelievo:
 http://www.portaleacque.salute.gov.it/PortaleAcquePubblico/rest/layer/PP/066103
 
-Chiamata dettagli aree (usare il codice ricavato da PP in codiceArea)
+dettagli zone (usare il codice ricavato da PP in codiceArea):
 http://www.portaleacque.salute.gov.it/PortaleAcquePubblico/datiArea.do?codiceArea=5529&tipoArea=AB
 
-Chiamata elenco aree adibite a balneazione per Comune
+elenco aree adibite a balneazione per ISTAT Comune:
 http://www.portaleacque.salute.gov.it/PortaleAcquePubblico/ricercaAreeBalneazione.do?codiceComune=068024&type=areebalneazione
