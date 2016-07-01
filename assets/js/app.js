@@ -5,8 +5,8 @@ $(window).resize(function() {
   sizeLayerControl();
 });
 
-// Manutenzione in corso
-bootbox.dialog({title:"Manutenzione in corso!", message:"<p class='text-center'><i class='fa fa-wrench fa-5x'></i></p>"});
+// Decommentare per manutenzione in corso
+// bootbox.dialog({title:"Manutenzione in corso!", message:"<p class='text-center'><i class='fa fa-wrench fa-5x'></i></p>"});
 
 $("#about-btn").click(function() { 	
 	
