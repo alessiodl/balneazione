@@ -5,19 +5,27 @@ $(window).resize(function() {
   sizeLayerControl();
 });
 
-$("#about-btn").click(function() {
+// Manutenzione in corso
+bootbox.dialog({title:"Manutenzione in corso!", message:"<p class='text-center'><i class='fa fa-wrench fa-5x'></i></p>"});
+
+$("#about-btn").click(function() { 	
 	
-  content = "<p>Questa applicazione web &egrave; stata sviluppata sfruttando i servizi ReST "+ 
-  		"esposti dal <a href='http://www.portaleacque.salute.gov.it' target='_blank'>Portale Acque</a> del <a href='http://salute.gov.it' target='_blank'>Ministero della Salute</a>. "+
-  		"I dati sono rilasciati sotto licenza Creative Commons <a href='http://creativecommons.org/licenses/by-nc-nd/4.0/deed.it' target='_blank'>Attribuzione-Non commerciale-Non opere derivate 4.0 Unported</a>. "+
-  		"La classificazione delle zone si basa su quella riportata nell’Allegato A alla <a href='http://www.artaabruzzo.it/download/aree/acqua/balneazione/20160414_AL_balneazione_all_08a_2016_dgr_148_2016.pdf' target='_blank'>D.G.R. n. 148 del 10/3/2016</a>.</p>"+
-  		"<p>Progettata e sviluppata da <a href='http://alessiodilorenzo.it' target='_blank'>Alessio Di Lorenzo</a> su base <a href='https://github.com/bmcbride/bootleaf' target='_blank'>BootLeaf</a>."
-  bootbox.dialog({
-  	title: "Informazioni",
-  	message: content
-  });
-  $(".navbar-collapse.in").collapse("hide");
-  return false;
+	$.when(	$.ajax("template-about.html") ).then(function(data){
+		// Elaborazione template
+		var template = Handlebars.compile(data);
+		var context = { autore: {nome:"Alessio Di Lorenzo", url: "http://alessiodilorenzo.it"} };
+		var html    = template(context);
+		// Parsing del template
+		var parsed = $.parseHTML(html)[0]
+		// Apertura del modal		
+		bootbox.dialog({
+	  		title: "Informazioni",
+	  		message: $(parsed).html()
+	  	});
+	});
+	
+  	$(".navbar-collapse.in").collapse("hide");
+  	return false;
 });
 
 $("#list-btn").click(function() {
@@ -236,127 +244,137 @@ function getDetails(prop,geom){
 		var analisi = JSON.parse(response).analisi;
 		var storico = JSON.parse(response).analisiStorico;
 		
-		// Template dettagli
-		var template = 	"<div class='row'>"+
-							"<div class='col-md-4'>"+
-								"<span class='text-muted'>Qualità dell'acqua: </span>"+
-								"<strong>"+qualityDescription(areaBalneazione.classe)+"</strong> "+qualityLegend(areaBalneazione.classe)+
-							"</div>"+
-							"<div class='col-md-8 text-right'>"+
-								"<span class='text-muted'>Stato: </span><strong>"+areaBalneazione.statoDesc+"</strong><br/>"+
-								"Stagione balneare dal "+formatDate(areaBalneazione.dataInizioStagioneBalneare)+" al "+formatDate(areaBalneazione.dataFineStagioneBalneare)+"</strong><br/>"+
-							"</div>"+
-						"</div>"+
-						"<hr>"+
-						"<div class='row'>"+
-							"<div class='col-md-12'>"+
-								"<ul class='nav nav-tabs' style='margin-bottom:5px;'>"+
-									"<li class='active'><a data-toggle='tab' href='#localizzazione-tab'><i class='fa fa-map-marker'></i> Localizzazione</a></li>"+
-						  			"<li><a data-toggle='tab' href='#analisi-tab'><i class='fa fa-flask'></i> Analisi stagione in corso</a></li>"+
-						  			"<li><a data-toggle='tab' href='#storico-tab'><i class='fa fa-history'></i> Analisi stagione precedente</a></li>"+
-								"</ul>"+
-								"<div class='tab-content'>"+
-									"<div id='localizzazione-tab' class='tab-pane fade in active'>"+
-										"<div class='thumbnail'><div id='detailMap' style='widht:100%;height:280px;'></div></div>"+
-										"<div class='thumbnail'>"+
-										"<table class='table table-striped table-condensed table-bordered'>"+
-											"<tr><td>Comune</td><td>"+areaBalneazione.comune+" ("+areaBalneazione.siglaProvincia+")</td></tr>"+
-											"<tr><td>Punto di prelievo</td><td> Lat: "+prop.PP_LAT+", Lon: "+prop.PP_LNG+"</td></tr>"+
-										"</table>"+
-										"</div>"+
-									"</div>"+
-									"<div id='analisi-tab' class='tab-pane fade'>"+
-										"<div class='thumbnail'><p style='padding:5px;margin:0px;border:1px solid #DDD;'><i class='fa fa-ban text-danger'></i> Limite Escherichia coli: <strong>"+areaBalneazione.limiteEc+"</strong>, Limite Enterococchi: <strong>"+areaBalneazione.limiteEi+"</strong></p></div>"+
-										"<div class='thumbnail' style='width:100%;height:250px;'><canvas id='analisi-chart' style='border:1px solid #dddddd;'></canvas></div>"+
-										"<div class='thumbnail'>"+
-											"<p class='text-muted' style='font-size:11px;margin-bottom:-3px;'>Le analisi sono espresse in <strong>cfu/100ml</strong> o equivalente, rappresentate su scala logaritmica</p>"+
-											"<table id='prelievi-table' class='table table-striped table-condensed table-bordered'>"+
-											"</table>"+
-										"</div>"+
-									"</div>"+
-									"<div id='storico-tab' class='tab-pane fade'>"+
-										"<div class='thumbnail'><p style='padding:5px;margin:0px;border:1px solid #DDD;'><i class='fa fa-ban text-danger'></i> Limite Escherichia coli: <strong>"+areaBalneazione.limiteEc+"</strong>, Limite Enterococchi: <strong>"+areaBalneazione.limiteEi+"</strong></p></div>"+
-										"<div class='thumbnail' style='width:100%;height:250px;'><canvas id='storico-chart' style='border:1px solid #dddddd;'></canvas></div>"+
-										"<div class='thumbnail'>"+
-											"<p class='text-muted' style='font-size:11px;margin-bottom:-3px;'>Le analisi sono espresse in <strong>cfu/100ml</strong> o equivalente, rappresentate su scala logaritmica</p>"+
-											"<table id='storico-table' class='table table-striped table-condensed table-bordered'>"+
-											"</table>"+
-										"</div>"+
-									"</div>"+
-								"</div>"+
-							"</div>"+
-						"</div>";
-		// Modal
-		bootbox.dialog({
-			size:'large',
-  			title: areaBalneazione.nome,
-  			message: template,
-  			className: "my-modal-details"
-		 });
-		 
-		 $(".my-modal-details").on("shown.bs.modal",function(){
-		 	// Stralcio
-  			detailMap = L.map("detailMap",{
-				zoom: 6,
-			  	center: [42.5, 14.5],
-			  	zoomControl: false
-			});
-				
-			var base = L.layerGroup([
-				L.tileLayer.wms('http://213.215.135.196/reflector/open/service?', {
-					layers: 'rv1',
-					format: 'image/png',
-					attribution: '<a href="http://realvista.it" target="_blank">RealVista</a> 1.0 Open WMS &copy; <a href="http://e-geos.it" target="_blank">e-GEOS SpA</a> - CC BY SA'
-				}),
-			 	L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png',{
-					attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
-				})
-			]).addTo(detailMap);
-				
-			var area = L.geoJson(null,{
-				style: function (feature) {
-			        switch (prop.PP_CLASSE) {
-			        	// case 0: return {color: "#ffffff", fillOpacity:0.4, weight: 2};
-			            case 1: return {color: "#0099ff", fillOpacity:0.4, weight: 2};
-			            case 2: return {color: "#00ff00", fillOpacity:0.4, weight: 2};
-			            case 3: return {color: "#ffff00", fillOpacity:0.4, weight: 2};
-			            case 4: return {color: "#ff0000", fillOpacity:0.4, weight: 2};
-			        }
-			    }
-			}).addTo(detailMap);
-			area.addData(geom);
+		$.when(	$.ajax("template-details.html") ).then(function(data){
 			
-			detailMap.fitBounds(area.getBounds(), {
-            	padding: [10, 10]
-        	});
-        	
-        	var punto = L.marker(L.latLng(prop.PP_LAT,prop.PP_LNG )).addTo(detailMap);
-        	
-        	// Analisi
-        	getAnalisi(analisi);
-        	
-        	// Storico
-        	getStorico(storico);
-        	
-        	// Use data table plugin
-			$('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
-		        $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
-		    });
-			
-			$('#prelievi-table,#storico-table').DataTable({
-				scrollY:        140,
-				scrollCollapse: true,
-				paging:         false,
-				order: 			[[ 0, "asc" ]],
-				searching: 		false,
-				info: 			false,
-				language: 		{ url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Italian.json" },
-				oLanguage: 		{sSearch: "Filtra tabella:", sInfo: "_TOTAL_ prelievi effettuati"}
+			// Funzioni helper per la formattazione del testo nel template
+			Handlebars.registerHelper('formatDescrizione', function(classe) {
+  				switch (classe) {
+					case "1": return new Handlebars.SafeString("<strong><span class='text-primary'>Eccellente</span></strong>");
+					case "2": return new Handlebars.SafeString("<strong><span class='text-success'>Buona</span></strong>");
+					case "3": return new Handlebars.SafeString("<strong><span class='text-warning'>Sufficiente</span></strong>");
+					case "4": return new Handlebars.SafeString("<strong><span class='text-danger'>Scarsa</span></strong>");
+				}
 			});
-        	
-        	// Grafici
-        	drawCharts(analisi,storico);
-		 });
+			
+			Handlebars.registerHelper('formatLegenda', function(classe) {
+				switch (classe) {
+					case "1": return new Handlebars.SafeString("<span class='text-primary'><i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i></span>");
+					case "2": return new Handlebars.SafeString("<span class='text-success'><i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i></span>");
+					case "3": return new Handlebars.SafeString("<span class='text-warning'><i class='fa fa-star'></i> <i class='fa fa-star'></i></span>");
+					case "4": return new Handlebars.SafeString("<span class='text-danger'><i class='fa fa-star'></i></span>");
+				}
+			});
+			
+			Handlebars.registerHelper('formatData', function(data) {
+				var datePart = data.match(/\d+/g),
+			  	year = datePart[0].substring(2), 
+			  	month = datePart[1], day = datePart[2];
+			
+			  	return new Handlebars.SafeString(day+'/'+month+'/'+year);
+			});
+			
+			// Elaborazione template
+			var template = Handlebars.compile(data);
+			var context = { 
+				qualita: {
+					descrizione: areaBalneazione.classe, 
+					legenda: areaBalneazione.classe
+				},
+				stato: {
+					descrizione: areaBalneazione.statoDesc,
+					dataInizio: areaBalneazione.dataInizioStagioneBalneare,
+					dataFine: areaBalneazione.dataFineStagioneBalneare
+				},
+				localizzazione: {
+					comune: areaBalneazione.comune,
+					provincia: areaBalneazione.siglaProvincia,
+					lat: prop.PP_LAT,
+					lng: prop.PP_LNG
+				},
+				limiti:{
+					ec: areaBalneazione.limiteEc,
+					ei: areaBalneazione.limiteEi
+				} 
+			};
+			var html = template(context);
+			// Parsing del template
+			var parsed = $.parseHTML(html)[0];
+			
+			// Apertura del modal		
+		  	bootbox.dialog({
+				size:'large',
+	  			title: areaBalneazione.nome,
+	  			message: $(parsed).html(),
+	  			className: "my-modal-details"
+			 });
+			 
+			 
+			 $(".my-modal-details").on("shown.bs.modal",function(){
+				console.log('ssss')
+			 	// Stralcio
+	  			detailMap = L.map("detailMap",{
+					zoom: 6,
+				  	center: [42.5, 14.5],
+				  	zoomControl: false
+				});
+					
+				var base = L.layerGroup([
+					L.tileLayer.wms('http://213.215.135.196/reflector/open/service?', {
+						layers: 'rv1',
+						format: 'image/png',
+						attribution: '<a href="http://realvista.it" target="_blank">RealVista</a> 1.0 Open WMS &copy; <a href="http://e-geos.it" target="_blank">e-GEOS SpA</a> - CC BY SA'
+					}),
+				 	L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png',{
+						attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+					})
+				]).addTo(detailMap);
+					
+				var area = L.geoJson(null,{
+					style: function (feature) {
+				        switch (prop.PP_CLASSE) {
+				        	// case 0: return {color: "#ffffff", fillOpacity:0.4, weight: 2};
+				            case 1: return {color: "#0099ff", fillOpacity:0.4, weight: 2};
+				            case 2: return {color: "#00ff00", fillOpacity:0.4, weight: 2};
+				            case 3: return {color: "#ffff00", fillOpacity:0.4, weight: 2};
+				            case 4: return {color: "#ff0000", fillOpacity:0.4, weight: 2};
+				        }
+				    }
+				}).addTo(detailMap);
+				area.addData(geom);
+				
+				detailMap.fitBounds(area.getBounds(), {
+	            	padding: [10, 10]
+	        	});
+	        	
+	        	var punto = L.marker(L.latLng(prop.PP_LAT,prop.PP_LNG )).addTo(detailMap);
+	        	
+	        	// Analisi
+	        	getAnalisi(analisi);
+	        	
+	        	// Storico
+	        	getStorico(storico);
+	        	
+	        	// Use data table plugin
+				$('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+			        $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+			    });
+				
+				$('#prelievi-table,#storico-table').DataTable({
+					scrollY:        140,
+					scrollCollapse: true,
+					paging:         false,
+					order: 			[[ 0, "asc" ]],
+					searching: 		false,
+					info: 			false,
+					language: 		{ url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Italian.json" },
+					oLanguage: 		{sSearch: "Filtra tabella:", sInfo: "_TOTAL_ prelievi effettuati"}
+				});
+	        	
+	        	// Grafici
+	        	drawCharts(analisi,storico);
+			 }); 
+			 
+		});
 		 
 	});
 }
@@ -411,32 +429,6 @@ function styleRows(valore){
 	row += "</tr>";
 	
 	return row;
-}
-
-function qualityDescription(classe){
-	switch (classe) {
-		case "1": return "<strong><span class='text-primary'>Eccellente</span></strong>";
-		case "2": return "<strong><span class='text-success'>Buona</span></strong>";
-		case "3": return "<strong><span class='text-warning'>Sufficiente</span></strong>";
-		case "4": return "<strong><span class='text-danger'>Scarsa</span></strong>";
-	}
-}
-
-function qualityLegend(classe){
-	switch (classe) {
-		case "1": return "<strong><span class='text-primary'><i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i></span></strong>";
-		case "2": return "<strong><span class='text-success'><i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i></span></strong>";
-		case "3": return "<strong><span class='text-warning'><i class='fa fa-star'></i> <i class='fa fa-star'></i></span></strong>";
-		case "4": return "<strong><span class='text-danger'><i class='fa fa-star'></i></span></strong>";
-	}
-}
-
-function formatDate(data){
-	var datePart = data.match(/\d+/g),
-  	year = datePart[0].substring(2), 
-  	month = datePart[1], day = datePart[2];
-
-  	return day+'/'+month+'/'+year;
 }
 
 // Mappa
