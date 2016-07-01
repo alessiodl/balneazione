@@ -13,7 +13,7 @@ $("#about-btn").click(function() {
 	$.when(	$.ajax("template-about.html") ).then(function(data){
 		// Elaborazione template
 		var template = Handlebars.compile(data);
-		var context = { autore: {nome:"Alessio Di Lorenzo", url: "http://alessiodilorenzo.it"} };
+		var context = { autore: { nome:"Alessio Di Lorenzo", url: "http://alessiodilorenzo.it"} };
 		var html    = template(context);
 		// Parsing del template
 		var parsed = $.parseHTML(html)[0]
